@@ -1,0 +1,83 @@
+import nltk
+from nltk.chat.util import Chat, reflections
+
+# Define pairs of patterns and responses
+pairs = [
+    ['my name is (.*)', ['Hi %1, how can I help you?']],
+    ['(hi|hello|hey|hola)', ['Hello, how can I assist you?']],
+    ['(.*) (location|city) ?', ['Tokyo, Japan']],
+    ['(.*) weather (.*)', ['Weather in %1 is usually nice']],
+    ['(.*) help (.*)', ['I can help you with various tasks. Please specify.']],
+    ['(.*) your name ?', ['I am a chatbot!']],
+    ['(.*) thank you (.*)', ['You\'re welcome!']],
+]
+
+# Create a chatbot using the pairs and reflections
+chatbot = Chat(pairs, reflections)
+
+# Start chatting
+print("Chatbot: Hi, how can I assist you today?")
+while True:
+    user_input = input("User: ")
+    if user_input.lower() == 'quit':
+        break
+    response = chatbot.respond(user_input)
+    print("Chatbot:", response)
+
+
+
+VOICE ASSISTANT:
+import speech_recognition as sr
+import pyttsx3
+
+# Initialize the speech recognizer and text-to-speech engine
+recognizer = sr.Recognizer()
+engine = pyttsx3.init()
+
+# Function to speak out the response
+def speak(text):
+    engine.say(text)
+    engine.runAndWait()
+
+# Function to listen to the user's voice
+def listen():
+    with sr.Microphone() as source:
+        print("Listening...")
+        recognizer.adjust_for_ambient_noise(source)
+        audio = recognizer.listen(source)
+
+    try:
+        print("Recognizing...")
+        user_input = recognizer.recognize_google(audio)
+        print("User:", user_input)
+        return user_input.lower()
+    except sr.UnknownValueError:
+        speak("Sorry, I didn't catch that. Can you please repeat?")
+        return listen()
+    except sr.RequestError:
+speak("Sorry, there was an error processing your request.")
+        return None
+
+# Function to handle user commands
+def handle_command(command):
+    if "hello" in command:
+        speak("Hello! How can I help you?")
+    elif "how are you" in command:
+        speak("I'm fine, thank you!")
+    elif "what is your name" in command:
+        speak("I am a voice assistant.")
+    elif "bye" in command:
+        speak("Goodbye!")
+        exit()
+    else:
+        speak("I'm sorry, I didn't understand that.")
+
+# Main loop for the voice assistant
+speak("Hello! How can I help you?")
+while True:
+    user_input = listen()
+    if user_input:
+        handle_command(user_input)
+
+     
+
